@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Bar</title>
+  <style>
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background-color: #333;
+      padding: 10px 0;
+    }
+
+    .section a {
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .section-1 a {
+      color: lightblue;
+    }
+
+    .section-2 a {
+      color: lightgreen;
+    }
+
+    .section-3 a {
+      color: lightcoral;
+    }
+
+    .section > a {
+      font-weight: bold;
+    }
+
+    a:hover {
+      color: yellow;
+    }
+
+    a:active {
+      color: orange;
+    }
+
+    a[href^="https"] {
+      color: purple !important;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="section section-1">
+      <a href="#">Home</a>
+      <a href="https://example.com">External Link</a>
+      <div><a href="#">Nested Link</a></div>
+    </div>
+
+    <div class="section section-2">
+      <a href="#">About</a>
+      <a href="https://about.com">About Us</a>
+      <div><a href="#">Team</a></div>
+    </div>
+
+    <div class="section section-3">
+      <a href="#">Contact</a>
+      <a href="https://contact.com">Contact Us</a>
+      <div><a href="#">Support</a></div>
+    </div>
+  </nav>
+</body>
+</html>
