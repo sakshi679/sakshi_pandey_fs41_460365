@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Interactive List with CSS Combinators</title>
+    <style>
+        ol li:first-child {
+            font-weight: bold;
+        }
+        ol li:first-child + li {
+            background-color: lightblue;
+        }      
+        ol li:nth-child(3) ~ li {
+            font-style: italic;
+        }
+        ol li:hover {
+            color: purple;
+        }
+    </style>
+</head>
+<body>
+
+    <ol>
+        <li>Item 1 (Bold)</li>
+        <li>Item 2 (Light Blue Background)</li>
+        <li>Item 3</li>
+        <li>Item 4 (Italic)</li>
+        <li>Item 5 (Italic)</li>
+    </ol>
+
+</body>
+</html>
