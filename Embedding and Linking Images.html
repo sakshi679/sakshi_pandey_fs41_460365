@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f9f9f9;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+        }
+
+        .gallery {
+            display: flex;
+            gap: 20px;
+        }
+
+        section {
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        section:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            width: 250px;
+            height: 150px;
+            border-radius: 8px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>Image Gallery</h1>
+
+    <div class="gallery">
+
+        <!--Image section 1 -->
+        <section>
+            <img src="https://www.daiwikhotels.com/wp-content/uploads/2024/07/kashi-viswanath-temple-cvr-2.jpg" alt="Beautiful Temple">
+            <a href="https://en.wikipedia.org/wiki/Kashi_Vishwanath_Temple" target="_blank">Know About Temple</a>
+        </section>
+
+        <!--image section 2-->
+        <section>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Amazon_jungle_from_above.jpg/1280px-Amazon_jungle_from_above.jpg" alt="Amazon Forest">
+            <a href="https://en.wikipedia.org/wiki/Amazon_rainforest" target="_blank">Know About Amazon</a>
+        </section>
+
+        <!--image section 3 -->
+        <section>
+            <img src="https://plus.unsplash.com/premium_photo-1680103200497-3e5107407bde?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dW5kZXIlMjB0aGUlMjBzZWF8ZW58MHx8MHx8fDA%3D" alt="Under The Sea">
+            <a href="https://en.wikipedia.org/wiki/Marine_life" target="_blank">Know About Marin Life</a>
+        </section>
+
+    </div>
+</body>
+</html>
