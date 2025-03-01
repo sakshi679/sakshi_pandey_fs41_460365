@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styling with ID Selectors and Universal Selector</title>
+
+    <style>
+        /* Remove all default margin and padding using the universal selector */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+    
+        /* Style for the main title (h1) with id "main-title" */
+        #main-title {
+          font-size: 32px;
+          color: darkblue;
+          text-align: center;
+          margin: 20px 0; /* Additional margin for spacing */
+        }
+    
+        /* Style for the subtitle (h2) with id "subtitle" */
+        #subtitle {
+          font-size: 24px;
+          color: darkgreen;
+          text-align: center;
+          margin-bottom: 20px; /* Additional margin for spacing */
+        }
+    
+        /* Style for all paragraph elements */
+        p {
+          padding: 10px;
+          border: 1px solid #ccc; /* Soft border color */
+          margin: 10px; /* Spacing between paragraphs */
+        }
+      </style>
+</head>
+<body>
+    <h1 id="main-title">Welcome to My Page</h1>
+  <h2 id="subtitle">A Beautiful Subtitle</h2>
+  
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum consequat, orci ac laoreet cursus, dolor sem luctus lorem.</p>
+  <p>Sed fringilla, urna eget tincidunt consectetur, urna risus gravida sapien, eget vulputate velit nibh ut magna.</p>
+  <p>Curabitur malesuada turpis sed turpis cursus, in interdum libero blandit. Proin vulputate semper odio, nec faucibus urna.</p>
+</body>
+</html>
