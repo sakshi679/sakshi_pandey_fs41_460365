@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog Post</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+        header{
+            background-color: lightgreen;
+            color: darkgreen;
+            padding: 15px;
+            text-align: center;
+            font-weight: bolder;
+            font-style: normal;
+        }
+        nav ul{
+            list-style: none;
+            margin: 0 15px;
+        }
+        nav ul li a{
+            color:blue;
+            text-decoration:underline;
+        }
+        main{
+            width: 80%;
+            margin: auto;
+        }
+        .post{
+            background-color:lightpink;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .post h2{
+            color:darkgreen;
+            font-style: normal;
+            text-align: center;
+        }
+        .read-more{
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #333;
+            color: bisque;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .post img{
+            width: 50%;
+            height: auto;
+            object-fit: cover;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .post-content{
+          padding: 20px;
+          width: 60%;
+          font-style: italic;
+          text-align: center;
+          
+        }
+        .read-more:hover{
+            background: #555;
+        }
+        .image-container{
+            text-align:left;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>Amazon Forest</h1>
+
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post">
+            <div class="image-container">
+            <img src="https://wallpaperaccess.com/full/1675922.jpg" alt="Amazon Forest">
+        </div>
+            <div class="post-content">
+                <h2>Exploring Nature</h2>
+                <p>NThe forest lies in a basin drained largely by the Amazon River, with 1100 tributaries. It is a moist broadleaf forest that covers seven million square kilometers (1.7 billion acres), of which five and a half million square kilometers (1.4 billion acres) are covered by the rainforest.
+
+
+                    This region includes territory belonging to nine nations. The majority of the forest is contained within Brazil, with 60% of the rainforest, followed by Peru with 13%, and Colombia with 10%. Venezuela, Ecuador, Bolivia, Guyana, Suriname and French Guiana have just a small amount of rainforest.[1]
+                    
+                    
+                    The Amazon represents over half of the planet's remaining rainforests, and it is the largest and most species-rich tract of tropical rainforest in the world. The forest was formed at least 55 million years ago, in the Eocene period.
+                    
+                    
+                    Wet tropical forests are the most species-rich biome, and tropical forests in the Americas have more species than African and Asian wet forests.
+                    
+                    
+                    More than one-third of all species in the world live in the Amazon rainforest. It is the richest tropical forest in the world in terms of biodiversity
+                    
+                    </p>
+                    <a href="#" class="read-more">Read More</a>
+            </div>
+        </article>
+    </main>
+</body>
+</html>
