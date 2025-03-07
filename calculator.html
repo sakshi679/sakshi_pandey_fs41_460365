@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASAI CALCULATOR</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+        h2{
+            font-size: 24px;
+            color:cadetblue;
+        }
+        .calculator{
+            display: grid;
+            grid-template-columns: repeat(4 ,60px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn{
+            width: 50px;
+            height: 60px;
+            font-size: 20px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+        }
+       .btn:hover{
+        background-color: #ddd;
+       }
+
+       .operator{
+        background-color: black;
+        color: white;
+       }
+
+       .operator:hover{
+        background-color: gray;
+       }
+       .clear{
+        background-color: #e74c3c;
+        color: white;
+       }
+
+       .clear:hover{
+        background-color: #c0392b;
+       }
+    </style>
+</head>
+<body>
+    <h2>Masai Calculator</h2>
+
+    <div class="calculator">
+        <button class="btn">1</button>
+        <button class="btn">2</button>
+        <button class="btn">3</button>
+        <button class="btn operator">+</button>
+
+        <button class="btn">4</button>
+        <button class="btn">5</button>
+        <button class="btn">6</button>
+        <button class="btn operator">-</button>
+
+        <button class="btn">7</button>
+        <button class="btn">8</button>
+        <button class="btn">9</button>
+        <button class="btn operator">X</button>
+
+        <button class="btn clear">C</button>
+        <button class="btn">0</button>
+        <button class="btn operator">=</button>
+        <button class="btn operator">/</button>
+
+
+    </div>
+</body>
+</html>
