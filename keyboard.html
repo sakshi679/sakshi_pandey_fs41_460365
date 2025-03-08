@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-color: #3DB2FF;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .keyboard{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 10px;
+            width: fit-content;
+            margin: auto;
+        }
+        .row{
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .key{
+            width: 70px;
+            height: 40px;
+            margin: 3px;
+            font-size: 16px;
+            color:#3DB2FF;
+            background-color: #2c2c2c;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .key:hover{
+            background-color: #444;
+        }
+        .large{
+            width: 80px;
+        }
+        .enter{
+          grid-column: span 3;
+          width: 150px;
+        }
+        .space{
+            grid-column: span 6;
+            width: 300px;
+        }
+        .shift{
+            grid-column: span 3;
+          width: 150px;
+        }
+    </style>
+</head>
+<body>
+   <div class="keyboard">
+
+    <div class="row">
+        <button class="key">~</button>
+        <button class="key">1</button>
+        <button class="key">2</button>
+        <button class="key">3</button>
+        <button class="key">4</button>
+        <button class="key">5</button>
+        <button class="key">6</button>
+        <button class="key">7</button>
+        <button class="key">8</button>
+        <button class="key">9</button>
+        <button class="key">0</button>
+        <button class="key large">Delete</button>
+    </div>
+
+    <div class="row">
+        <button class="key large">tab</button>
+        <button class="key">Q</button>
+        <button class="key">W</button>
+        <button class="key">E</button>
+        <button class="key">R</button>
+        <button class="key">T</button>
+        <button class="key">Y</button>
+        <button class="key">U</button>
+        <button class="key">I</button>
+        <button class="key">O</button>
+        <button class="key">P</button>
+        <button class="key">\</button>
+    </div>
+
+    <div class="row">
+        <button class="key large">caps</button>
+        <button class="key">A</button>
+        <button class="key">S</button>
+        <button class="key">D</button>
+        <button class="key">F</button>
+        <button class="key">G</button>
+        <button class="key">H</button>
+        <button class="key">J</button>
+        <button class="key">K</button>
+        <button class="key">L</button>
+        <button class="key enter">ENTER</button>
+    </div>
+
+    <div class="row">
+        <button class="key large">shift</button>
+        <button class="key">Z</button>
+        <button class="key">X</button>
+        <button class="key">C</button>
+        <button class="key">V</button>
+        <button class="key">B</button>
+        <button class="key">N</button>
+        <button class="key">M</button>
+        <button class="key"><</button>
+        <button class="key">></button>
+        <button class="key shift">shift</button>
+    </div>
+
+    <div class="row">
+        <button class="key">&#127760;</button>
+        <button class="key large">control</button>
+        <button class="key">option</button>
+        <button class="key">alt</button>
+        <button class="key space">space</button>
+        <button class="key">alt</button>
+        <button class="key">option</button>
+        <button class="key"><-</button>
+        <button class="key">-></button>
+    </div>
+   </div>
+    
+</body>
+</html>
