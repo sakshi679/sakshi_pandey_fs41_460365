@@ -1,0 +1,38 @@
+article:nth-of-type(even) {
+    background-color: lightgray;
+  }
+  
+  article p:last-of-type {
+    font-style: italic;
+  }
+  
+  article section > *:first-child {
+    font-weight: bold;
+  }
+  
+  p:before {
+    content: "\200B";
+    display: none;
+  }
+  
+  article:has(img) h1, 
+  article:has(img) h2, 
+  article:has(img) h3 {
+    border: 2px solid black;
+  }
+  
+  footer a {
+    color: red;
+  }
+  
+  /* nth-of-type(even) is used to target even-numbered articles.
+
+   p:last-of-type ensures only the last paragraph inside an article is italic.
+
+   section > *:first-child makes the first child of each section bold.
+
+   Using p:before { content: "\200B"; display: none; } to hide empty <p> tags without using :empty.
+
+   :has(img) checks if an article contains an image and then applies a border to its title.
+   
+   footer a targets only the links inside the footer and applies a different style. */
