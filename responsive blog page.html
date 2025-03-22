@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        main {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .blog-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 70%;
+        }
+        .post {
+            background: white;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        aside {
+            width: 25%;
+            background: white;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #333;
+            color: white;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+                align-items: center;
+            }
+            .blog-posts {
+                width: 100%;
+            }
+            aside {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tech Blog</h1>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Posts</a>
+            <a href="#">Categories</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <main>
+        <section class="blog-posts">
+            <article class="post">Post 1</article>
+            <article class="post">Post 2</article>
+            <article class="post">Post 3</article>
+            <article class="post">Post 4</article>
+        </section>
+        <aside>
+            <h2>Recent Posts</h2>
+            <ul>
+                <li>Post A</li>
+                <li>Post B</li>
+                <li>Post C</li>
+            </ul>
+        </aside>
+    </main>
+    <footer>
+        <p>&copy; 2025 Tech Blog</p>
+    </footer>
+</body>
+</html>
