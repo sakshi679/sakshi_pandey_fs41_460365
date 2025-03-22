@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Profile Card Layout</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgb(134, 224, 222);
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .name {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .designation {
+            font-size: 0.9em;
+            color: gray;
+        }
+
+        .bio {
+            font-size: 0.8em;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 1.2em;
+        }
+        @media (max-width: 768px) {
+            .container {
+                justify-content: center;
+            }
+
+            .card {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="profile-img">
+            <div class="name">John Doe</div>
+            <div class="designation">Software Engineer</div>
+            <div class="bio">Passionate about coding and design.</div>
+            <div class="social-icons">
+                <a href="#">🔵</a>
+                <a href="#">🐦</a>
+                <a href="#">📷</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="User" class="profile-img">
+            <div class="name">Jane Smith</div>
+            <div class="designation">UI/UX Designer</div>
+            <div class="bio">Designing sleek user experiences.</div>
+            <div class="social-icons">
+                <a href="#">🔵</a>
+                <a href="#">🐦</a>
+                <a href="#">📷</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="User" class="profile-img">
+            <div class="name">Mark Johnson</div>
+            <div class="designation">Data Scientist</div>
+            <div class="bio">Loves AI, data, and deep learning.</div>
+            <div class="social-icons">
+                <a href="#">🔵</a>
+                <a href="#">🐦</a>
+                <a href="#">📷</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="User" class="profile-img">
+            <div class="name">Emily White</div>
+            <div class="designation">Product Manager</div>
+            <div class="bio">Strategizing for the best products.</div>
+            <div class="social-icons">
+                <a href="#">🔵</a>
+                <a href="#">🐦</a>
+                <a href="#">📷</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
