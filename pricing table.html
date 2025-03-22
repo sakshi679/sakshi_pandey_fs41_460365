@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Table</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #F4F6F8;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .plan {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .recommended {
+            background: #0A74DA;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .plan h2 {
+            margin: 10px 0;
+        }
+        .plan p {
+            font-size: 18px;
+        }
+        .plan button {
+            background: #0A74DA;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .recommended button {
+            background: white;
+            color: #0A74DA;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .pricing-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="plan">
+            <h2>Basic Plan</h2>
+            <p>$10/month</p>
+            <button>Choose Plan</button>
+        </div>
+        <div class="plan recommended">
+            <h2>Standard Plan</h2>
+            <p>$20/month</p>
+            <button>Choose Plan</button>
+        </div>
+        <div class="plan">
+            <h2>Premium Plan</h2>
+            <p>$30/month</p>
+            <button>Choose Plan</button>
+        </div>
+    </div>
+</body>
+</html>
