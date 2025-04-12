@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Post</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: 30px auto;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .response {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Create a Post</h2>
+  <form id="postForm">
+    <input type="text" id="title" placeholder="Title" required />
+    <textarea id="body" rows="4" placeholder="Body" required></textarea>
+    <button type="submit">Submit</button>
+    <p id="error" class="error"></p>
+  </form>
+  <div id="response" class="response"></div>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const titleInput = document.getElementById('title');
+    const bodyInput = document.getElementById('body');
+    const responseDiv = document.getElementById('response');
+    const errorMsg = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = titleInput.value.trim();
+      const body = bodyInput.value.trim();
+
+      if (!title || !body) {
+        errorMsg.textContent = 'Both fields are required.';
+        return;
+      }
+
+      errorMsg.textContent = '';
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title, body })
+        });
+
+        const data = await res.json();
+
+        responseDiv.innerHTML = `
+          <h3>Post Created</h3>
+          <p><strong>ID:</strong> ${data.id}</p>
+          <p><strong>Title:</strong> ${data.title}</p>
+          <p><strong>Body:</strong> ${data.body}</p>
+        `;
+        form.reset();
+      } catch (err) {
+        errorMsg.textContent = 'Something went wrong. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>
