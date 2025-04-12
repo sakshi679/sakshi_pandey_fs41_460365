@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-User Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #loginSection, #cartSection, #addItemSection {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            margin: 0 3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginSection">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter username">
+        <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="cartSection" style="display: none;">
+        <h2>Your Cart (<span id="currentUser"></span>)</h2>
+        <table id="cartTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="cartItems"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Grand Total</td>
+                    <td id="grandTotal">$0.00</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div id="addItemSection" style="display: none;">
+        <h2>Add Item</h2>
+        <input type="text" id="itemName" placeholder="Item name">
+        <input type="number" id="itemPrice" placeholder="Price" min="0" step="0.01">
+        <input type="number" id="itemQuantity" placeholder="Quantity" min="1" value="1">
+        <button id="addItemBtn">Add to Cart</button>
+    </div>
+
+    <script>
+        const loginSection = document.getElementById('loginSection');
+        const cartSection = document.getElementById('cartSection');
+        const addItemSection = document.getElementById('addItemSection');
+        const usernameInput = document.getElementById('username');
+        const loginBtn = document.getElementById('loginBtn');
+        const currentUserSpan = document.getElementById('currentUser');
+        const cartItems = document.getElementById('cartItems');
+        const grandTotal = document.getElementById('grandTotal');
+        const itemNameInput = document.getElementById('itemName');
+        const itemPriceInput = document.getElementById('itemPrice');
+        const itemQuantityInput = document.getElementById('itemQuantity');
+        const addItemBtn = document.getElementById('addItemBtn');
+
+        let currentUser = null;
+
+        function loadCart() {
+            const carts = JSON.parse(localStorage.getItem('shoppingCarts')) || {};
+            return carts[currentUser] || [];
+        }
+
+        function saveCart(cart) {
+            const carts = JSON.parse(localStorage.getItem('shoppingCarts')) || {};
+            carts[currentUser] = cart;
+            localStorage.setItem('shoppingCarts', JSON.stringify(carts));
+        }
+
+        function renderCart() {
+            const cart = loadCart();
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                row.innerHTML = `
+                    <td>${item.itemName}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>
+                        <input type="number" value="${item.quantity}" min="1" 
+                               onchange="updateQuantity(${index}, this.value)">
+                    </td>
+                    <td>$${itemTotal.toFixed(2)}</td>
+                    <td>
+                        <button class="action-btn" onclick="removeItem(${index})">Remove</button>
+                    </td>
+                `;
+                cartItems.appendChild(row);
+            });
+
+            grandTotal.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateQuantity(index, newQuantity) {
+            const cart = loadCart();
+            if (newQuantity < 1) return;
+            cart[index].quantity = parseInt(newQuantity);
+            saveCart(cart);
+            renderCart();
+        }
+
+        function removeItem(index) {
+            const cart = loadCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
+
+        loginBtn.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                currentUser = username;
+                currentUserSpan.textContent = username;
+                loginSection.style.display = 'none';
+                cartSection.style.display = 'block';
+                addItemSection.style.display = 'block';
+                renderCart();
+            }
+        });
+
+        addItemBtn.addEventListener('click', () => {
+            const name = itemNameInput.value.trim();
+            const price = parseFloat(itemPriceInput.value);
+            const quantity = parseInt(itemQuantityInput.value);
+
+            if (name && !isNaN(price) {
+                const cart = loadCart();
+                cart.push({ itemName: name, price: price, quantity: quantity });
+                saveCart(cart);
+                renderCart();
+                itemNameInput.value = '';
+                itemPriceInput.value = '';
+                itemQuantityInput.value = '1';
+            }
+        });
+
+        window.updateQuantity = updateQuantity;
+        window.removeItem = removeItem;
+    </script>
+</body>
+</html>
