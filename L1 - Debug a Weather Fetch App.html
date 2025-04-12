@@ -1,144 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Weather App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .weather-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            padding: 10px;
-            flex-grow: 1;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #3367d6;
-        }
-        .weather-info {
-            margin-top: 20px;
-        }
-        .error {
-            color: #d32f2f;
-            margin-top: 10px;
-        }
-        .weather-icon {
-            width: 50px;
-            height: 50px;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        .temp {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-    </style>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .weather-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    input { flex: 1; }
+    button {
+      background: #4285f4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background: #3367d6; }
+    .temp { font-size: 24px; font-weight: bold; margin: 10px 0; }
+    .error { color: #d32f2f; margin-top: 10px; }
+    .weather-icon {
+      width: 50px;
+      height: 50px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Weather App</h1>
-    
-    <form id="weatherForm">
-        <input type="text" id="city" placeholder="Enter city name" required>
-        <button type="submit">Get Weather</button>
-    </form>
-    
-    <div id="weather" class="weather-container">
-        <p>Enter a city name to check the weather</p>
-    </div>
+  <h1>Weather App</h1>
+  <form id="weatherForm">
+    <input type="text" id="city" placeholder="Enter city name" required>
+    <button type="submit">Get Weather</button>
+  </form>
+  <div id="weather" class="weather-container">
+    <p>Enter a city name to check the weather</p>
+  </div>
 
-    <script>
-        const weatherForm = document.getElementById('weatherForm');
-        const cityInput = document.getElementById('city');
-        const weatherDisplay = document.getElementById('weather');
-        
-        // My API key from OpenWeather
-        const API_KEY = 'd1e8e1c0b5a1b5a1b5a1b5a1b5a1b5a'; // This is just an example, use your own key
-        
-        weatherForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const city = cityInput.value.trim();
-            
-            if (!city) {
-                showError('Please enter a city name');
-                return;
-            }
-            
-            try {
-                await fetchWeather(city);
-            } catch (error) {
-                showError('Failed to fetch weather data. Please try again.');
-                console.error('Error:', error);
-            }
-        });
-        
-        async function fetchWeather(city) {
-            try {
-                const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error('City not found');
-                }
-                
-                const data = await response.json();
-                displayWeather(data);
-            } catch (error) {
-                if (error.message === 'City not found') {
-                    showError('City not found. Please check the spelling and try again.');
-                } else {
-                    throw error; // Re-throw other errors
-                }
-            }
-        }
-        
-        function displayWeather(data) {
-            const cityName = data.name;
-            const temp = Math.round(data.main.temp);
-            const description = data.weather[0].description;
-            const iconCode = data.weather[0].icon;
-            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
-            
-            weatherDisplay.innerHTML = `
-                <h2>${cityName}</h2>
-                <div class="temp">${temp}°C</div>
-                <div class="description">
-                    <img src="${iconUrl}" alt="${description}" class="weather-icon">
-                    ${description}
-                </div>
-                <p>Humidity: ${data.main.humidity}% | Wind: ${data.wind.speed} m/s</p>
-            `;
-        }
-        
-        function showError(message) {
-            weatherDisplay.innerHTML = `<p class="error">${message}</p>`;
-        }
-    </script>
+  <script>
+    const form = document.getElementById('weatherForm');
+    const input = document.getElementById('city');
+    const output = document.getElementById('weather');
+    const API_KEY = 'd1e8e1c0b5a1b5a1b5a1b5a1b5a1b5a';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const city = input.value.trim();
+      if (!city) {
+        showError('Please enter a city name');
+        return;
+      }
+      try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`);
+        if (!res.ok) throw new Error('not found');
+        const data = await res.json();
+        showWeather(data);
+      } catch (err) {
+        showError(err.message === 'not found' ? 'City not found.' : 'Error fetching data');
+      }
+    });
+
+    function showWeather(data) {
+      const icon = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+      output.innerHTML = `
+        <h2>${data.name}</h2>
+        <div class="temp">${Math.round(data.main.temp)}°C</div>
+        <div><img src="${icon}" class="weather-icon">${data.weather[0].description}</div>
+        <p>Humidity: ${data.main.humidity}% | Wind: ${data.wind.speed} m/s</p>
+      `;
+    }
+
+    function showError(msg) {
+      output.innerHTML = `<p class="error">${msg}</p>`;
+    }
+  </script>
 </body>
 </html>
