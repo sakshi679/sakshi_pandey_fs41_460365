@@ -1,21 +1,71 @@
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 20px;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-header{
-    background: #ce7dbf;
-    padding: 10px;
-    
+ main.centered{
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+ }
+ main{
+    padding: 20px;
+ }
+
+section.hero{
+    padding: 30px;
+    background-color: #1e3d59;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+header {
+    background-color: #1e3d59;
+    color: white;
+    padding: 20px;
+    text-align: center;
 }
 nav a{
-    margin-right: 10px;
+    color: white;
+    margin: 0 10px;
     text-decoration: none;
-    font-weight: bold;
 }
-textarea{
-    width: 300px;
-    height: 60px;
+main{
+    padding: 20px;
 }
-#recipeList{
-    margin-top: 20px;
+footer{
+    background-color: #1e3d59;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 40px;
+}
+.gallery{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.gallery img{
+    width: 200px;
+    height: auto;
+    border-radius: 8px;
+}
+h2{
+    text-align: center;
+    padding-bottom: 20px;
+}
+.contact-form-container{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
