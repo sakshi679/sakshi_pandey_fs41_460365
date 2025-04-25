@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+  <title>Product Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .product-card img {
+      max-width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .loading, .error {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Product Search Page</h2>
+
+  <div class="filter-section">
+    <label>
+      Category:
+      <select id="category">
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="books">Books</option>
+      </select>
+    </label>
+
+    <label>
+      Min Price:
+      <input type="number" id="minPrice" placeholder="Min Price">
+    </label>
+
+    <label>
+      Max Price:
+      <input type="number" id="maxPrice" placeholder="Max Price">
+    </label>
+
+    <label>
+      Sort:
+      <select id="sortOrder">
+        <option value="asc">Low to High</option>
+        <option value="desc">High to Low</option>
+      </select>
+    </label>
+
+    <button onclick="searchProducts()">Search</button>
+  </div>
+
+  <div id="status" class="loading"></div>
+  <div id="productList" class="product-grid"></div>
+
+  <script>
+    async function searchProducts() {
+      const category = document.getElementById('category').value;
+      const minPrice = document.getElementById('minPrice').value;
+      const maxPrice = document.getElementById('maxPrice').value;
+      const sort = document.getElementById('sortOrder').value;
+
+      const statusDiv = document.getElementById('status');
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      statusDiv.textContent = 'Loading...';
+
+      // Build dynamic API URL
+      const baseUrl = 'https://mockapi.io/products';
+      const params = new URLSearchParams();
+
+      if (category) params.append('category', category);
+      if (minPrice) params.append('min_price', minPrice);
+      if (maxPrice) params.append('max_price', maxPrice);
+      if (sort) params.append('sort', sort);
+
+      const apiUrl = `${baseUrl}?${params.toString()}`;
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Failed to fetch products.');
+
+        const products = await response.json();
+        statusDiv.textContent = '';
+
+        if (products.length === 0) {
+          statusDiv.textContent = 'No products found.';
+          return;
+        }
+
+        products.forEach(product => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+
+          card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>₹${product.price}</p>
+          `;
+
+          productList.appendChild(card);
+        });
+
+      } catch (error) {
+        statusDiv.textContent = 'Error loading products. Please try again.';
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
