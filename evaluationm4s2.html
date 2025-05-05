@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="student profile dashboard with firbase">
+    <meta name="keywords" content="student dashboard, firebase, html, css, js">
+    <meta name="author" content="sakshi pandey">
+    <title>Student Profile Dashbaord</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: palevioletred;
+            color: babypink;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a{
+            text-decoration: none;
+            color: inherit;
+        }
+        header{
+            background-color: #0077cc;
+            color: white;
+            padding: 1rem;
+        }
+        header h1{
+            text-align: center;
+        }
+        nav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #005fa3;
+            padding: 0.5rem;
+        }
+        .nav-links{
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav-links a{
+            color: white;
+            padding: 0.5rem;
+        }
+        .hamburger{
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .hamburger div{
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px;
+        }
+        main {
+            padding: 1rem;
+        }
+        form{
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,o.1);
+            margin-bottom: 2rem;
+        }
+        form input,
+        form select,
+        form textarea {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button{
+            background-color: #0077cc;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover{
+            background-color: #005fa3;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        table, th, td{
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th{
+            background-color: #eee;
+        }
+        .dark-mode{
+            background-color: #121212;
+            color: white;
+        }
+        .dark-mode-header,
+        .dark-mode nav{
+            background-color: #1e1e1e;
+        }
+        .dark-mode table,
+        .dark-mode form{
+            background-color: #1e1e1e;
+            color: white;
+            border-color: #333;
+        }
+        .dark-mode input,
+        .dark-mode select,
+        .dark-mode textarea{
+            background-color: #2a2a2a;
+            color: white;
+            border-color: #555;
+        }
+        footer{
+            background-color: #0077cc;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: #005fa3
+            
+
+            }
+            .nav-links.active{
+                display: flex;
+            }
+            .hamburger{
+                display: flex;
+            }
+        };
+        .hidden{
+            display: flex;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Student Dashboard</h1>
+            <button id="menu-toggle">&#9776</button>
+            <nav id="navbar">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+            </nav>
+            <button id="dark-mode-toggle">&#127769</button>
+        </div>
+    </header>
+
+    <main>
+        <article>
+            <section>
+                <h2>Edit Profile</h2>
+                <form id="student-form">
+                    <label>Name: <input type="text" id="name" required /></label>
+                    <label>Age: <input type="number" id="age" required /></label>
+                    <label>Email: <input type="email" id="email" required /></label>
+                    <label>Course: <input type="text" id="course" required /></label>
+                    <label>Gender:
+                        <select id="gender" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </label>
+                    <label>Skills: <input type="text" id="skills" placeholder="e.g. HTML, CSS, JS"></label>
+                    <label>Profile image:
+                        <input type="file" id="profile-image" accept="image/*">
+                    </label>
+                    <button type="submit">Save</button>
+                </form>
+            </section>
+
+            <section>
+                <input type="text" id="search" placeholder="search by name...">
+                <button id="sort">Sort by Name</button>
+                <button id="load-data">Load Data</button>
+
+                <h2>Your Profile Details</h2>
+                <table id="student-table">
+                    <thead>
+                        <tr><th>Field</th><th>Value</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Name</td><td id="display-name"></td></tr>
+                        <tr><td>Age</td><td id="display-age"></td></tr>
+                        <tr><td>Email</td><td id="display-email"></td></tr>
+                        <tr><td>Course</td><td id="display-course"></td></tr>
+                        <tr><td>Gender</td><td id="display-gender"></td></tr>
+                        <tr><td>Skills</td><td id="display-skills"></td></tr>
+                        <tr><td>Profile image</td><td id="display-image"></td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 student Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+    <script>
+        //firebase setup
+        const firebaseConfig = {
+  apiKey: "AIzaSyDr5X_ULJBOyz7TXg7JJ6dQpTziWFkPq8c",
+  authDomain: "student-dashboard-f98b7.firebaseapp.com",
+  projectId: "student-dashboard-f98b7",
+  storageBucket: "student-dashboard-f98b7.firebasestorage.app",
+  messagingSenderId: "278024701278",
+  appId: "1:278024701278:web:a0e4803451ede83662fbcf",
+  measurementId: "G-1YXLS19HR4"
+};
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+        
+
+        const form = document.getElementById('student-form');
+        const menuToggle = document.getElementById('menu-toggle');
+        const navbar = document.getElementById('navbar');
+        const darkToggle = document.getElementById('dark-mode-toggle');
+        const loadBtn = document.getElementById('load-data');
+        const sortBtn = document.getElementById('sort');
+        const search = document.getElementById('search');
+
+        let student = [];
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('open')
+        });
+
+        darkToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode')
+        });
+
+        function renderStudent(student){
+            document.getElementById('display-name').textContent = student.name;
+            document.getElementById('display-age').textContent = student.age;
+            document.getElementById('display-email').textContent = student.email;
+            document.getElementById('display-course').textContent = student.course;
+            document.getElementById('display-gender').textContent = student.gender;
+            document.getElementById('display-skills').textContent = student.skills;
+
+            if(student.image){
+                document.getElementById('display-image').innerHTML = `img src="${student.image}" style="max:width:100px; height:100px"`
+            }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+        
+            const student = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                email: document.getElementById('email').value,
+                course: document.getElementById('course').value,
+                gender: document.getElementById('gender').value,
+                skills: document.getElementById('skills').value,
+            };
+
+            const file = document.getElementById('profile-image').files[0];
+
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    student.image = e.target.result;
+                    saveStudent(student);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                student.image = null;
+                saveStudent(student);
+            }
+        });
+
+        function saveStudent(student){
+            renderStudent(student);
+            localStorage.setItem('student', JSON.stringify(student));
+            const key = db.ref('student').push().key;
+            db.ref('student/' + key).set(student);
+        }
+
+        window.addEventListener('load', () => {
+            const localData = localStorage.getItem('student');
+            if(localData){
+                renderStudent(JSON.parse(localData));
+            }
+        });
+
+        loadBtn.addEventListener('click', () =>{
+            db.ref('student').once('value', snapshot => {
+                const data = snapshot.val();
+                students = [];
+                for(let id in data){
+                    students.push(data[id]);
+                }
+                displayALLStudents(students);
+            });
+        });
+
+        function displayALLStudents(studentList) {
+            const tbody = document.querySelector("$student-table-tbody");
+            tbody.innerHTML = '';
+            studentList.forEach(student => {
+                tbody.innerHTML += `
+                <tr><td>Name</td><td>${student.name}</td></tr>
+                <tr><td>Age</td><td>${student.age}</td></tr>
+                <tr><td>Email</td><td>${student.email}</td></tr>
+                <tr><td>Course</td><td>${student.course}</td></tr>
+                <tr><td>Gender</td><td>${student.gender}</td></tr>
+                <tr><td>Skills</td><td>${student.skills}</td></tr>
+                <tr><td>Profile image</td><td>${student.image ? `img src=${student.image}'style=max=width: 100px; height: auto:'/>` : ''}</td></tr>
+                <tr><td colspan = "2"><hr></td></tr>
+                `;
+            });
+        }
+
+        search.addEventListener('input', () => {
+            const filtered = students.filter(s => s.name.toLowerCase().includes(search.value.toLowerCase()));
+            displayALLStudents(filtered);
+        });
+        sortBtn.addEventListener('click', () => {
+            students.sort((a,b) => a.name.localeCompare(b.name));
+            displayALLStudents(students);
+        });
+    </script>
+
+    
+    
+</body>
+</html>
