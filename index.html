@@ -1,35 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Blog - Home</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form, .controls, .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    form input, form select, form button,
+    .controls select, .pagination button {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    form button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #45a049;
+    }
+    ul#bookListContainer {
+      list-style: none;
+      padding: 0;
+    }
+    ul#bookListContainer li {
+      background: #fafafa;
+      margin-bottom: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .pagination button {
+      background-color: #eee;
+      border: none;
+      cursor: pointer;
+    }
+    .pagination button:hover {
+      background-color: #ddd;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Wander Lust Diaries</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="destinations.html">Destinations</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="contact.html">Contact Us</a>
-        </nav>
-    </header>
-    
-    <main>
-        <section class="hero">
-            <h2>Explore the world with Us!</h2>
-            <p>join us on unforgattable journeys accross the globe.</p>
-            <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?..." width="100%" height="300" loading="lazy"></iframe>
-            </div>
-        </section>
-    </main>
+  <div class="container">
+    <h1>Library Management System</h1>
 
-    <footer>
-        <p> &#169 2025 Wander Lust Diaries</p>
-        <p>Follow us on Instagram | Facebook | Twitter</p>
-    </footer>
+    <!-- Add Book Form -->
+    <form id="addBookForm">
+      <input name="title" placeholder="Title" required>
+      <input name="author" placeholder="Author" required>
+      <input name="genre" placeholder="Genre">
+      <input type="number" name="publishedYear" placeholder="Year">
+      <label><input type="checkbox" name="available"> Available</label>
+      <button type="submit">Add Book</button>
+    </form>
+
+    <!-- Filtering and Sorting Controls -->
+    <div class="controls">
+      <select id="filterGenre">
+        <option value="">All Genres</option>
+        <option>Science Fiction</option>
+        <option>Fantasy</option>
+        <option>Non-Fiction</option>
+        <option>Romance</option>
+      </select>
+
+      <select id="filterAuthor">
+        <option value="">All Authors</option>
+        <option>J.K. Rowling</option>
+        <option>J.R.R. Tolkien</option>
+        <option>George R.R. Martin</option>
+        <option>Isaac Asimov</option>
+      </select>
+
+      <select id="sortField">
+        <option value="title">Sort by Title</option>
+        <option value="author">Sort by Author</option>
+        <option value="publishedYear">Sort by Year</option>
+      </select>
+    </div>
+
+    <!-- Book List -->
+    <ul id="bookListContainer"></ul>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+      <button id="prevPage">Prev</button>
+      <button id="nextPage">Next</button>
+    </div>
+  </div>
+
+  <!-- Load main.js as module -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
