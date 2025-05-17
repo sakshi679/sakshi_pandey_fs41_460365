@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Persistent List with localStorage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      text-align: center;
+      background-color: #fafafa;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #clearBtn {
+      background-color: #dc3545;
+      margin-top: 20px;
+    }
+
+    #clearBtn:hover {
+      background-color: #a71d2a;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    ul li {
+      background-color: #e9ecef;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    #emptyMessage {
+      margin-top: 20px;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Persistent List</h2>
+
+  <input type="text" id="itemInput" placeholder="Add new item" />
+  <button id="addBtn">Add</button>
+
+  <ul id="itemList"></ul>
+  <p id="emptyMessage" style="display:none;">No items added yet.</p>
+
+  <button id="clearBtn" style="display:none;">Clear All</button>
+
+  <script>
+    const itemInput = document.getElementById('itemInput');
+    const addBtn = document.getElementById('addBtn');
+    const itemList = document.getElementById('itemList');
+    const clearBtn = document.getElementById('clearBtn');
+    const emptyMessage = document.getElementById('emptyMessage');
+
+    let items = JSON.parse(localStorage.getItem('myItems')) || [];
+
+    function renderItems() {
+      itemList.innerHTML = '';
+
+      if (items.length === 0) {
+        emptyMessage.style.display = 'block';
+        clearBtn.style.display = 'none';
+      } else {
+        emptyMessage.style.display = 'none';
+        clearBtn.style.display = 'inline-block';
+
+        items.forEach((item, index) => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          itemList.appendChild(li);
+        });
+      }
+    }
+
+    // Save items to localStorage
+    function saveItems() {
+      localStorage.setItem('myItems', JSON.stringify(items));
+    }
+
+    // Add item function
+    function addItem() {
+      const value = itemInput.value.trim();
+      if (value === '') return;
+
+      items.push(value);
+      saveItems();
+      renderItems();
+      itemInput.value = '';
+      itemInput.focus();
+    }
+
+    // Clear all items
+    function clearAll() {
+      items = [];
+      saveItems();
+      renderItems();
+    }
+
+    addBtn.addEventListener('click', addItem);
+    itemInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addItem();
+    });
+    clearBtn.addEventListener('click', clearAll);
+
+    // Initial render
+    renderItems();
+  </script>
+</body>
+</html>
