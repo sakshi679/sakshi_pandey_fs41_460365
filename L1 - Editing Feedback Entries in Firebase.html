@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Feedback App with Edit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f4f4f4;
+    }
+
+    form, .edit-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px;
+      background-color: teal;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Feedback Form</h1>
+
+  <form id="feedbackForm">
+    <input type="text" id="username" placeholder="Your Name" required />
+    <textarea id="message" placeholder="Your Feedback" required></textarea>
+    <button type="submit">Submit Feedback</button>
+  </form>
+
+  <p id="status"></p>
+
+  <h2>All Feedbacks</h2>
+  <table id="feedbackTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Message</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Hidden Edit Form -->
+  <div id="editSection" style="display:none;">
+    <h2>Edit Feedback</h2>
+    <form id="editForm" class="edit-form">
+      <input type="text" id="editUsername" required />
+      <textarea id="editMessage" required></textarea>
+      <button type="submit">Update Feedback</button>
+    </form>
+  </div>
+
+  <script>
+    const feedbackForm = document.getElementById("feedbackForm");
+    const status = document.getElementById("status");
+    const tableBody = document.querySelector("#feedbackTable tbody");
+
+    const editSection = document.getElementById("editSection");
+    const editForm = document.getElementById("editForm");
+    const editUsername = document.getElementById("editUsername");
+    const editMessage = document.getElementById("editMessage");
+
+    let currentEditKey = null;
+
+    const dbURL = "https://feedback-app-99ff7-default-rtdb.firebaseio.com/feedbacks";
+
+    feedbackForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const feedback = {
+        username: document.getElementById("username").value,
+        message: document.getElementById("message").value
+      };
+
+      fetch(`${dbURL}.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(feedback)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed");
+          return res.json();
+        })
+        .then(() => {
+          status.textContent = "✅ Feedback submitted!";
+          status.style.color = "green";
+          feedbackForm.reset();
+          getFeedbacks();
+        })
+        .catch(() => {
+          status.textContent = "❌ Error submitting!";
+          status.style.color = "red";
+        });
+    });
+
+    function getFeedbacks() {
+      fetch(`${dbURL}.json`)
+        .then(res => res.json())
+        .then(data => {
+          tableBody.innerHTML = "";
+          for (let key in data) {
+            const row = document.createElement("tr");
+
+            const usernameCell = document.createElement("td");
+            usernameCell.textContent = data[key].username;
+
+            const messageCell = document.createElement("td");
+            messageCell.textContent = data[key].message;
+
+            const actionCell = document.createElement("td");
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.addEventListener("click", () => showEditForm(key, data[key]));
+
+            actionCell.appendChild(editBtn);
+
+            row.append(usernameCell, messageCell, actionCell);
+            tableBody.appendChild(row);
+          }
+        });
+    }
+
+    getFeedbacks();
+
+    function showEditForm(key, feedback) {
+      currentEditKey = key;
+      editUsername.value = feedback.username;
+      editMessage.value = feedback.message;
+      editSection.style.display = "block";
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    editForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const updatedFeedback = {
+        username: editUsername.value,
+        message: editMessage.value
+      };
+
+      fetch(`${dbURL}/${currentEditKey}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedFeedback)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Update failed");
+          return res.json();
+        })
+        .then(() => {
+          alert("✅ Feedback updated!");
+          editSection.style.display = "none";
+          getFeedbacks();
+        })
+        .catch(() => {
+          alert("❌ Error updating feedback.");
+        });
+    });
+  </script>
+</body>
+</html>
