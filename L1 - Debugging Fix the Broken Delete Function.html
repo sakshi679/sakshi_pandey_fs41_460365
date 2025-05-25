@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delete User Firebase</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Users</h2>
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tableBody = document.querySelector("tbody")
+    const dbURL = "https://feedback-app-99ff7-default-rtdb.firebaseio.com/users"
+
+    function getUsers() {
+      fetch(`${dbURL}.json`)
+        .then(res => res.json())
+        .then(data => {
+          tableBody.innerHTML = ""
+          for (let key in data) {
+            const row = document.createElement("tr")
+
+            const nameCell = document.createElement("td")
+            nameCell.textContent = data[key].username
+
+            const actionCell = document.createElement("td")
+            const delBtn = document.createElement("button")
+            delBtn.textContent = "Delete"
+            delBtn.addEventListener("click", () => deleteUser(key))
+
+            actionCell.appendChild(delBtn)
+            row.append(nameCell, actionCell)
+            tableBody.appendChild(row)
+          }
+        })
+    }
+
+    function deleteUser(key) {
+      fetch(`https://feedback-app-99ff7-default-rtdb.firebaseio.com/users/${key}.json`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(() => {
+        getUsers()
+      })
+      .catch(error => console.error("Error deleting user:", error))
+    }
+
+    getUsers()
+  </script>
+
+</body>
+</html>
