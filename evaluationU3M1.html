@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Manager</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background-color: lightpink; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; cursor: pointer; }
+    .controls { margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+    .form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .form input, .form select { padding: 5px; }
+    .pagination { margin-top: 20px; display: flex; align-items: center; gap: 10px; }
+    button { padding: 5px 10px; }
+  </style>
+</head>
+<body>
+  <h1>Student Manager</h1>
+  <div class="form">
+    <input type="text" id="name" placeholder="Name" />
+    <input type="number" id="age" placeholder="Age" />
+    <select id="grade">
+      <option value="">Grade</option>
+      <option value="9th">9th</option>
+      <option value="10th">10th</option>
+      <option value="11th">11th</option>
+      <option value="12th">12th</option>
+    </select>
+    <select id="section">
+      <option value="">Section</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+    <input type="number" id="score" placeholder="Score" />
+    <button onclick="addOrUpdateStudent()">Submit</button>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search by Name or Grade" oninput="renderTable()" />
+    <select id="filterGrade" onchange="renderTable()">
+      <option value="">All Grades</option>
+      <option value="9th">9th</option>
+      <option value="10th">10th</option>
+      <option value="11th">11th</option>
+      <option value="12th">12th</option>
+    </select>
+    <select id="filterSection" onchange="renderTable()">
+      <option value="">All Sections</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+    <button onclick="sortBy('name')">Sort by Name</button>
+    <button onclick="sortBy('score')">Sort by Score</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Age</th><th>Grade</th><th>Section</th><th>Score</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+  </table>
+
+  <div class="pagination">
+    <button onclick="changePage(-1)">Prev</button>
+    <span id="pageIndicator"></span>
+    <button onclick="changePage(1)">Next</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+    import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuyYxEIBLr1Zf04IZT-fbl89V5mRu6Kdo",
+      authDomain: "student-dashboard-curd-app.firebaseapp.com",
+      databaseURL: "https://student-dashboard-curd-app-default-rtdb.firebaseio.com",
+      projectId: "student-dashboard-curd-app",
+      storageBucket: "student-dashboard-curd-app.appspot.com",
+      messagingSenderId: "829905655090",
+      appId: "1:829905655090:web:d7191e721c16ebe170f32b",
+      measurementId: "G-E60FTE63VP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
+    const dbRef = ref(db, "students");
+
+    let students = [];
+    let editId = null;
+    let currentPage = 1;
+    const perPage = 2;
+
+    onValue(dbRef, (snapshot) => {
+      students = [];
+      snapshot.forEach(child => {
+        students.push({ id: child.key, ...child.val() });
+      });
+      renderTable();
+    });
+
+    window.addOrUpdateStudent = function () {
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const grade = document.getElementById("grade").value;
+      const section = document.getElementById("section").value;
+      const score = document.getElementById("score").value;
+      const student = { name, age, grade, section, score };
+      if (editId) {
+        update(ref(db, `students/${editId}`), student);
+        editId = null;
+      } else {
+        push(dbRef, student);
+      }
+      document.querySelectorAll(".form input, .form select").forEach(input => input.value = "");
+    };
+
+    window.renderTable = function () {
+      let filtered = [...students];
+      const search = document.getElementById("search").value.toLowerCase();
+      const filterGrade = document.getElementById("filterGrade").value;
+      const filterSection = document.getElementById("filterSection").value;
+
+      if (search) filtered = filtered.filter(s => s.name.toLowerCase().includes(search) || s.grade.toLowerCase().includes(search));
+      if (filterGrade) filtered = filtered.filter(s => s.grade === filterGrade);
+      if (filterSection) filtered = filtered.filter(s => s.section === filterSection);
+
+      const totalPages = Math.ceil(filtered.length / perPage);
+      if (currentPage > totalPages) currentPage = totalPages || 1;
+
+      const start = (currentPage - 1) * perPage;
+      const pageData = filtered.slice(start, start + perPage);
+
+      document.getElementById("studentTable").innerHTML = pageData.map(s => `
+        <tr>
+          <td>${s.name}</td>
+          <td>${s.age}</td>
+          <td>${s.grade}</td>
+          <td>${s.section}</td>
+          <td>${s.score}</td>
+          <td>
+            <button onclick="editStudent('${s.id}')">Edit</button>
+            <button onclick="deleteStudent('${s.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join("") || '<tr><td colspan="6">No students found</td></tr>';
+
+      document.getElementById("pageIndicator").textContent = `Page ${currentPage} of ${totalPages || 1}`;
+    };
+
+    window.changePage = function (step) {
+      currentPage += step;
+      renderTable();
+    };
+
+    window.editStudent = function (id) {
+      const student = students.find(s => s.id === id);
+      if (!student) return;
+      document.getElementById("name").value = student.name;
+      document.getElementById("age").value = student.age;
+      document.getElementById("grade").value = student.grade;
+      document.getElementById("section").value = student.section;
+      document.getElementById("score").value = student.score;
+      editId = id;
+    };
+
+    window.deleteStudent = function (id) {
+      remove(ref(db, `students/${id}`));
+    };
+
+    window.sortBy = function (field) {
+      students.sort((a, b) => {
+        if (field === 'score') return b.score - a.score;
+        return a[field].localeCompare(b[field]);
+      });
+      renderTable();
+    };
+  </script>
+</body>
+</html>
