@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Debounced Movie Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f0f0f0;
+    }
+    input {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #results {
+      margin-top: 20px;
+    }
+    .movie {
+      background: white;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎬 Movie Search</h2>
+  <input type="text" id="searchBox" placeholder="Type a movie name..." />
+  <div id="results"></div>
+
+  <script>
+    let timeoutId;
+    const searchBox = document.getElementById('searchBox');
+    const resultsDiv = document.getElementById('results');
+
+    async function fetchMovies(query) {
+      try {
+        const response = await fetch(` http://www.omdbapi.com/?i=tt3896198&apikey=3becb41f&s=${query}`);
+        const data = await response.json();
+        displayResults(data.Search || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        resultsDiv.innerHTML = "<p>Something went wrong.</p>";
+      }
+    }
+
+    function displayResults(movies) {
+      resultsDiv.innerHTML = '';
+      if (movies.length === 0) {
+        resultsDiv.innerHTML = "<p>No movies found.</p>";
+        return;
+      }
+      movies.forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'movie';
+        div.textContent = movie.Title;
+        resultsDiv.appendChild(div);
+      });
+    }
+
+    searchBox.addEventListener('input', () => {
+      clearTimeout(timeoutId);
+      const query = searchBox.value.trim();
+      if (query === '') {
+        resultsDiv.innerHTML = '';
+        return;
+      }
+      timeoutId = setTimeout(() => {
+        fetchMovies(query);
+      }, 500);
+    });
+  </script>
+
+</body>
+</html>
