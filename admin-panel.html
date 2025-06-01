@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - E-Commerce</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 400px; }
+    img { max-width: 100px; display: block; margin-top: 5px; }
+    .product { border: 1px solid #ccc; margin-bottom: 15px; padding: 10px; }
+    .product-actions button { margin-right: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Admin Dashboard</h2>
+  <button id="logoutBtn">Logout</button>
+  <h3>Add / Edit Product</h3>
+  <form id="productForm">
+    <input type="text" id="title" placeholder="Product Title" required /><br />
+    <input type="number" id="price" placeholder="Price" required /><br />
+    <input type="url" id="image" placeholder="Image URL" required /><br />
+    <button type="submit" id="saveBtn">Add Product</button>
+    <button type="button" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
+  </form>
+
+  <h3>Products List</h3>
+  <div id="productsList"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBy4q_gzI0s5yc6YeFQAg0SDgmMRPgxEkY",
+      authDomain: "authentication-system-14fe4.firebaseapp.com",
+      databaseURL: "https://authentication-system-14fe4-default-rtdb.firebaseio.com",
+      projectId: "authentication-system-14fe4",
+      storageBucket: "authentication-system-14fe4.firebasestorage.app",
+      messagingSenderId: "1065896531508",
+      appId: "1:1065896531508:web:553d96d6d6114447ee5c61"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // Check role on page load
+    const role = sessionStorage.getItem("userRole");
+    if (role !== "admin") {
+      alert("Access denied. Redirecting...");
+      window.location.href = "user-panel.html";
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.onclick = () => {
+      auth.signOut().then(() => {
+        sessionStorage.clear();
+        window.location.href = "signin.html";
+      });
+    };
+
+    const productForm = document.getElementById("productForm");
+    const titleInput = document.getElementById("title");
+    const priceInput = document.getElementById("price");
+    const imageInput = document.getElementById("image");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const productsList = document.getElementById("productsList");
+
+    let editProductId = null;
+
+    function clearForm() {
+      titleInput.value = "";
+      priceInput.value = "";
+      imageInput.value = "";
+      editProductId = null;
+      saveBtn.textContent = "Add Product";
+      cancelEditBtn.style.display = "none";
+    }
+
+    cancelEditBtn.onclick = clearForm;
+
+    productForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = titleInput.value.trim();
+      const price = parseFloat(priceInput.value);
+      const image = imageInput.value.trim();
+
+      if (!title || isNaN(price) || !image) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      if (editProductId) {
+        // Edit product
+        database.ref("products/" + editProductId).set({ title, price, image })
+          .then(() => {
+            alert("Product updated.");
+            clearForm();
+            loadProducts();
+          });
+      } else {
+        // Add new product
+        const newProductRef = database.ref("products").push();
+        newProductRef.set({ title, price, image })
+          .then(() => {
+            alert("Product added.");
+            clearForm();
+            loadProducts();
+          });
+      }
+    });
+
+    function loadProducts() {
+      productsList.innerHTML = "Loading products...";
+      database.ref("products").once("value").then(snapshot => {
+        productsList.innerHTML = "";
+        const products = snapshot.val();
+
+        if (!products) {
+          productsList.textContent = "No products available.";
+          return;
+        }
+
+        Object.keys(products).forEach(productId => {
+          const product = products[productId];
+
+          const div = document.createElement("div");
+          div.classList.add("product");
+
+          div.innerHTML = `
+            <strong>Title:</strong> ${product.title} <br />
+            <strong>Price:</strong> $${product.price} <br />
+            <img src="${product.image}" alt="${product.title}" />
+            <div class="product-actions">
+              <button data-id="${productId}" class="editBtn">Edit</button>
+              <button data-id="${productId}" class="deleteBtn">Delete</button>
+            </div>
+          `;
+
+          productsList.appendChild(div);
+        });
+
+        // Add event listeners for edit and delete
+        document.querySelectorAll(".editBtn").forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.getAttribute("data-id");
+            const p = products[id];
+            titleInput.value = p.title;
+            priceInput.value = p.price;
+            imageInput.value = p.image;
+            editProductId = id;
+            saveBtn.textContent = "Update Product";
+            cancelEditBtn.style.display = "inline";
+          };
+        });
+
+        document.querySelectorAll(".deleteBtn").forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.getAttribute("data-id");
+            if (confirm("Are you sure you want to delete this product?")) {
+              database.ref("products/" + id).remove().then(() => {
+                alert("Product deleted.");
+                loadProducts();
+              });
+            }
+          };
+        });
+      });
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>
