@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Detail</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #fafafa; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; text-align: center; }
+    img { width: 100%; border-radius: 8px; }
+    p { margin: 10px 0; }
+    footer { text-align: center; margin-top: 30px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container" id="characterDetail"></div>
+  <footer id="clock"></footer>
+
+  <script>
+    async function fetchCharacter(id) {
+      const res = await fetch(`https://rickandmortyapi.com/api/character/${id}`);
+      const data = await res.json();
+      const container = document.getElementById('characterDetail');
+      const episodes = data.episode.length;
+      container.innerHTML = `
+        <img src="${data.image}" alt="${data.name}">
+        <h2>${data.name}</h2>
+        <p>Status: ${data.status}</p>
+        <p>Species: ${data.species}</p>
+        <p>Type: ${data.type || 'N/A'}</p>
+        <p>Gender: ${data.gender}</p>
+        <p>Origin: ${data.origin.name}</p>
+        <p>Location: ${data.location.name}</p>
+        <p>Episodes appeared in: ${episodes}</p>
+      `;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const day = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById('clock').innerText = `${time} ${day}`;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const characterId = urlParams.get('id');
+    fetchCharacter(characterId);
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>

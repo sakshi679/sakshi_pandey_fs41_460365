@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rick and Morty Wiki</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background-color: #f0f0f0; }
+    h1 { text-align: center; padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; }
+    .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+    .card img { width: 100%; }
+    .card p { margin: 10px 0; }
+    .pagination { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+    button { padding: 10px 20px; cursor: pointer; }
+    footer { text-align: center; margin: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Rick and Morty Wiki</h1>
+  <div class="grid" id="characterGrid"></div>
+  <div class="pagination">
+    <button onclick="changePage(-1)">Previous</button>
+    <button onclick="changePage(1)">Next</button>
+  </div>
+  <footer id="clock"></footer>
+
+  <script>
+    let currentPage = 1;
+    async function fetchCharacters(page) {
+      const res = await fetch(`https://rickandmortyapi.com/api/character?page=${page}`);
+      const data = await res.json();
+      displayCharacters(data.results);
+    }
+
+    function displayCharacters(characters) {
+      const grid = document.getElementById('characterGrid');
+      grid.innerHTML = '';
+      characters.slice(0, 6).forEach(char => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <a href="detail.html?id=${char.id}" target="_blank">
+            <img src="${char.image}" alt="${char.name}">
+            <p><strong>${char.name}</strong></p>
+            <p>${char.species}</p>
+            <p>Status: ${char.status}</p>
+          </a>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function changePage(dir) {
+      currentPage += dir;
+      if (currentPage < 1) currentPage = 1;
+      fetchCharacters(currentPage);
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const day = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById('clock').innerText = `${time} ${day}`;
+    }
+
+    setInterval(updateClock, 1000);
+    fetchCharacters(currentPage);
+  </script>
+</body>
+</html>
