@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rick and Morty Wiki</title>
+  <style>
+    body { font-family: Arial; margin: 0; padding: 0; }
+    .container { padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { border: 1px solid #ccc; padding: 10px; text-align: center; border-radius: 10px; }
+    img { width: 100%; border-radius: 10px; }
+    .pagination { text-align: center; margin: 20px; }
+    footer { text-align: center; padding: 10px; background: #f0f0f0; position: fixed; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="container" id="character-container"></div>
+  <div class="pagination">
+    <button onclick="changePage(-1)">Previous</button>
+    <button onclick="changePage(1)">Next</button>
+  </div>
+  <footer id="clock"></footer>
+
+  <script>
+    let page = 1;
+
+    function loadCharacters() {
+      fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("character-container");
+          container.innerHTML = "";
+          data.results.slice(0, 6).forEach(char => {
+            const div = document.createElement("div");
+            div.className = "card";
+            div.innerHTML = `
+              <a href="detail.html?id=${char.id}" target="_blank">
+                <img src="${char.image}" />
+                <h3>${char.name}</h3>
+                <p>${char.species}</p>
+                <p>${char.status}</p>
+              </a>
+            `;
+            container.appendChild(div);
+          });
+        });
+    }
+
+    function changePage(val) {
+      page += val;
+      if (page < 1) page = 1;
+      loadCharacters();
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const date = now.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById("clock").innerText = `${time} ${date}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+    loadCharacters();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Detail</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    img { max-width: 300px; border-radius: 10px; }
+    footer { text-align: center; padding: 10px; background: #f0f0f0; position: fixed; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="detail"></div>
+  <footer id="clock"></footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    fetch(`https://rickandmortyapi.com/api/character/${id}`)
+      .then(res => res.json())
+      .then(char => {
+        document.getElementById("detail").innerHTML = `
+          <img src="${char.image}" />
+          <h1>${char.name}</h1>
+          <p>Status: ${char.status}</p>
+          <p>Species: ${char.species}</p>
+          <p>Type: ${char.type || 'N/A'}</p>
+          <p>Gender: ${char.gender}</p>
+          <p>Origin: ${char.origin.name}</p>
+          <p>Location: ${char.location.name}</p>
+          <p>Episode Count: ${char.episode.length}</p>
+        `;
+      });
+
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const date = now.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById("clock").innerText = `${time} ${date}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
