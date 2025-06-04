@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .character-container {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    .character-container img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: black;
+      color: white;
+      text-align: center;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="character-container" id="charDetail"></div>
+  <footer id="clock"></footer>
+  <script>
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+
+    fetch(`https://akabab.github.io/starwars-api/api/id/${id}.json`)
+      .then(res => res.json())
+      .then(data => {
+        const box = document.getElementById('charDetail')
+        box.innerHTML = `
+          <img src="${data.image}"/>
+          <h2>${data.name}</h2>
+          <p><strong>Gender:</strong> ${data.gender}</p>
+          <p><strong>Species:</strong> ${data.species}</p>
+          <p><strong>Homeworld:</strong> ${data.homeworld}</p>
+          <p><strong>Affiliations:</strong> ${data.affiliations.join(', ')}</p>
+          <p><strong>Height:</strong> ${data.height}</p>
+          <p><strong>Mass:</strong> ${data.mass}</p>
+          <p><strong>Eye Color:</strong> ${data.eyeColor}</p>
+          <p><strong>Hair Color:</strong> ${data.hairColor}</p>
+          <p><strong>Skin Color:</strong> ${data.skinColor}</p>
+        `
+      })
+
+    function updateClock() {
+      const clock = document.getElementById('clock')
+      const now = new Date()
+      const time = now.toLocaleTimeString()
+      const date = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      clock.textContent = `${time} ${date}`
+    }
+    setInterval(updateClock, 1000)
+    updateClock()
+  </script>
+</body>
+</html>

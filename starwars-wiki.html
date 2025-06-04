@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars Wiki</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="gallery"></div>
+  <div class="pagination">
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+  <footer id="clock"></footer>
+  <script>
+    let allData = []
+    let page = 1
+
+    fetch('https://akabab.github.io/starwars-api/api/all.json')
+      .then(res => res.json())
+      .then(data => {
+        allData = data
+        showPage()
+      })
+
+    function showPage() {
+      const gallery = document.getElementById('gallery')
+      gallery.innerHTML = ''
+      let start = (page - 1) * 6
+      let end = start + 6
+      let characters = allData.slice(start, end)
+      characters.forEach(c => {
+        let div = document.createElement('div')
+        div.className = 'card'
+        div.innerHTML = `<img src="${c.image}"/><h3>${c.name}</h3><p>${c.species}</p><p>${c.gender}</p>`
+        div.onclick = () => {
+          window.open(`detail.html?id=${c.id}`, '_blank')
+        }
+        gallery.appendChild(div)
+      })
+    }
+
+    document.getElementById('next').onclick = () => {
+      if ((page * 6) < allData.length) {
+        page++
+        showPage()
+      }
+    }
+
+    document.getElementById('prev').onclick = () => {
+      if (page > 1) {
+        page--
+        showPage()
+      }
+    }
+
+    function updateClock() {
+      const clock = document.getElementById('clock')
+      const now = new Date()
+      const time = now.toLocaleTimeString()
+      const date = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      clock.textContent = `${time} ${date}`
+    }
+    setInterval(updateClock, 1000)
+    updateClock()
+  </script>
+</body>
+</html>
