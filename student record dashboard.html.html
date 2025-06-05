@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Record Manager</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .high-score {
+      background-color: #c8f7c5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Student Record Manager</h1>
+
+  <form id="studentForm">
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="batch" placeholder="Batch">
+    <input type="number" id="age" placeholder="Age">
+    <input type="number" id="score" placeholder="Score (0-100)">
+    <button type="submit">Submit</button>
+  </form>
+
+  <input type="text" id="searchInput" placeholder="Search by name">
+  <br>
+  <button id="sortAge">Sort by Age</button>
+  <button id="sortScore">Sort by Score</button>
+
+  <p>Total Students: <span id="totalCount">0</span></p>
+  <p>Average Score: <span id="averageScore">0</span></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Batch</th>
+        <th>Age</th>
+        <th>Score</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById("studentForm");
+    const table = document.getElementById("studentTable");
+    const searchInput = document.getElementById("searchInput");
+    const totalCount = document.getElementById("totalCount");
+    const averageScore = document.getElementById("averageScore");
+    let students = [];
+    let editingIndex = -1;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const batch = document.getElementById("batch").value.trim();
+      const age = parseInt(document.getElementById("age").value);
+      const score = parseInt(document.getElementById("score").value);
+
+      if (!name || !batch || isNaN(age) || isNaN(score) || score < 0 || score > 100) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      const student = { name, batch, age, score };
+
+      if (editingIndex > -1) {
+        students[editingIndex] = student;
+        editingIndex = -1;
+      } else {
+        students.push(student);
+      }
+
+      form.reset();
+      renderTable();
+    });
+
+    function renderTable(data = students) {
+      table.innerHTML = "";
+      data.forEach((student, index) => {
+        const row = document.createElement("tr");
+        if (student.score > 80) row.classList.add("high-score");
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.batch}</td>
+          <td>${student.age}</td>
+          <td>${student.score}</td>
+          <td>
+            <button onclick="editStudent(${index})">Edit</button>
+            <button onclick="deleteStudent(${index})">Delete</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+      totalCount.textContent = students.length;
+      let totalScore = students.reduce((sum, s) => sum + s.score, 0);
+      averageScore.textContent = students.length ? (totalScore / students.length).toFixed(2) : 0;
+    }
+
+    function deleteStudent(index) {
+      students.splice(index, 1);
+      renderTable();
+    }
+
+    function editStudent(index) {
+      const student = students[index];
+      document.getElementById("name").value = student.name;
+      document.getElementById("batch").value = student.batch;
+      document.getElementById("age").value = student.age;
+      document.getElementById("score").value = student.score;
+      editingIndex = index;
+    }
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const filtered = students.filter(s => s.name.toLowerCase().includes(query));
+      renderTable(filtered);
+    });
+
+    document.getElementById("sortAge").addEventListener("click", function () {
+      students.sort((a, b) => a.age - b.age);
+      renderTable();
+    });
+
+    document.getElementById("sortScore").addEventListener("click", function () {
+      students.sort((a, b) => b.score - a.score);
+      renderTable();
+    });
+  </script>
+</body>
+</html>
