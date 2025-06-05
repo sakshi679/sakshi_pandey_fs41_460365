@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      text-align: center;
+    }
+    #searchBox {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #results {
+      margin-top: 20px;
+    }
+    .name-item {
+      padding: 8px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    .highlight {
+      background-color: yellow;
+    }
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px;
+      display: none;
+      background-color: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #stats {
+      margin-top: 20px;
+    }
+    #loader {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Search Dashboard</h1>
+  <input type="text" id="searchBox" placeholder="Type to search...">
+  <div id="loader">Searching...</div>
+  <div id="results"></div>
+
+  <div id="stats">
+    <p>Total Keystrokes: <span id="keystrokes">0</span></p>
+    <p>Debounced Searches: <span id="debouncedCount">0</span></p>
+  </div>
+
+  <button id="backToTop">Back to Top</button>
+
+  <script>
+ 
+    const names = [];
+    for (let i = 0; i < 250; i++) {
+      names.push("Name" + i);
+    }
+
+    const searchBox = document.getElementById("searchBox");
+    const results = document.getElementById("results");
+    const loader = document.getElementById("loader");
+    const keystrokesSpan = document.getElementById("keystrokes");
+    const debouncedCountSpan = document.getElementById("debouncedCount");
+    const backToTopBtn = document.getElementById("backToTop");
+
+    let keystrokes = 0;
+    let debouncedCount = 0;
+
+    // Debounce function
+    function debounce(func, delay) {
+      let timer;
+      return function(...args) {
+        clearTimeout(timer);
+        loader.style.display = "block";
+        timer = setTimeout(() => {
+          func.apply(this, args);
+          loader.style.display = "none";
+        }, delay);
+      };
+    }
+
+    function throttle(func, limit) {
+      let lastCall = 0;
+      return function(...args) {
+        const now = new Date().getTime();
+        if (now - lastCall >= limit) {
+          lastCall = now;
+          func.apply(this, args);
+        }
+      };
+    }
+
+    function displayResults(query) {
+      results.innerHTML = "";
+      debouncedCount++;
+      debouncedCountSpan.textContent = debouncedCount;
+      const filtered = names.filter(name => name.toLowerCase().includes(query.toLowerCase()));
+      if (filtered.length === 0) {
+        results.innerHTML = "<p>No results found</p>";
+        return;
+      }
+      filtered.forEach(name => {
+        const div = document.createElement("div");
+        div.className = "name-item";
+        const regex = new RegExp(query, 'gi');
+        div.innerHTML = name.replace(regex, match => `<span class='highlight'>${match}</span>`);
+        results.appendChild(div);
+      });
+    }
+
+    const debouncedSearch = debounce(function (e) {
+      displayResults(e.target.value);
+    }, 1000);
+
+    searchBox.addEventListener("input", function(e) {
+      keystrokes++;
+      keystrokesSpan.textContent = keystrokes;
+      debouncedSearch(e);
+    });
+    window.addEventListener("scroll", throttle(() => {
+      if (window.scrollY > 200) {
+        backToTopBtn.style.display = "block";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    }, 500));
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
