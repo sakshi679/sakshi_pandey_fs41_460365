@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Explorer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <style>
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      height: 100%;
+    }
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+    }
+    .pagination-controls button {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <h2 class="mb-4 text-center">🛒 Product Explorer</h2>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <select id="sort" class="form-select">
+          <option value="">Sort By</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+          <option value="az">Title: A-Z</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select id="filter" class="form-select">
+          <option value="">Filter by Category</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <input type="text" id="search" class="form-control" placeholder="Search Products..." />
+      </div>
+    </div>
+
+    <div class="row" id="product-list"></div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 pagination-controls">
+      <button class="btn btn-outline-primary" id="prev">Previous</button>
+      <span id="page-num"></span>
+      <button class="btn btn-outline-primary" id="next">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const productList = document.getElementById("product-list");
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    const pageNum = document.getElementById("page-num");
+    const sortDropdown = document.getElementById("sort");
+    const filterDropdown = document.getElementById("filter");
+    const searchInput = document.getElementById("search");
+
+    let allProducts = [];
+    let filteredProducts = [];
+    let currentPage = parseInt(localStorage.getItem("page")) || 1;
+    const itemsPerPage = 8;
+    let searchTimeout;
+
+    async function fetchProducts() {
+      const res = await fetch("https://fakestoreapi.com/products");
+      const data = await res.json();
+      allProducts = data;
+      filteredProducts = [...allProducts];
+      populateCategories();
+      renderProducts();
+    }
+
+    function populateCategories() {
+      const categories = [...new Set(allProducts.map(p => p.category))];
+      categories.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        filterDropdown.appendChild(opt);
+      });
+    }
+
+    function renderProducts() {
+      let displayProducts = [...filteredProducts];
+
+      const sortValue = sortDropdown.value;
+      if (sortValue === "low") {
+        displayProducts.sort((a, b) => a.price - b.price);
+      } else if (sortValue === "high") {
+        displayProducts.sort((a, b) => b.price - a.price);
+      } else if (sortValue === "az") {
+        displayProducts.sort((a, b) => a.title.localeCompare(b.title));
+      }
+
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedProducts = displayProducts.slice(start, end);
+
+      productList.innerHTML = "";
+      paginatedProducts.forEach(p => {
+        const col = document.createElement("div");
+        col.className = "col-md-3 mb-4";
+        col.innerHTML = `
+          <div class="product-card">
+            <img src="${p.image}" alt="${p.title}" />
+            <h6>${p.title}</h6>
+            <p>₹${p.price}</p>
+            <small>${p.category}</small>
+          </div>`;
+        productList.appendChild(col);
+      });
+
+      pageNum.textContent = `Page ${currentPage}`;
+      localStorage.setItem("page", currentPage);
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderProducts();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderProducts();
+      }
+    });
+
+    sortDropdown.addEventListener("change", () => renderProducts());
+
+    filterDropdown.addEventListener("change", () => {
+      const cat = filterDropdown.value;
+      filteredProducts = cat ? allProducts.filter(p => p.category === cat) : [...allProducts];
+      currentPage = 1;
+      renderProducts();
+    });
+
+    searchInput.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const term = searchInput.value.toLowerCase();
+        filteredProducts = allProducts.filter(p => p.title.toLowerCase().includes(term));
+        currentPage = 1;
+        renderProducts();
+      }, 1000);
+    });
+
+    fetchProducts();
+  </script>
+</body>
+</html>
