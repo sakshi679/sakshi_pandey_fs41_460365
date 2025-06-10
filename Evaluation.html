@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Evaluation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    .search-filter {
+      margin-bottom: 20px;
+    }
+    .character-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px;
+      width: 200px;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      display: inline-block;
+      vertical-align: top;
+      background-color: #fff;
+    }
+    .character-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+    .status.alive { color: green; }
+    .status.dead { color: red; }
+    .status.unknown { color: gray; }
+    .veteran-badge {
+      display: inline-block;
+      background-color: gold;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
+    #pagination {
+      margin-top: 20px;
+    }
+    #pagination button {
+      padding: 5px 10px;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+    <h1>Characters Explorer</h1>
+  <div class="search-filter">
+    <input type="text" id="search" placeholder="Search by name..." />
+    <div>
+      <label>Status:</label>
+      <label><input type="radio" name="status" value="" checked /> All</label>
+      <label><input type="radio" name="status" value="alive" /> Alive</label>
+      <label><input type="radio" name="status" value="dead" /> Dead</label>
+      <label><input type="radio" name="status" value="unknown" /> Unknown</label>
+    </div>
+    <div>
+      <label>Species:</label>
+      <label><input type="radio" name="species" value="" checked /> All</label>
+      <label><input type="radio" name="species" value="Human" /> Human</label>
+      <label><input type="radio" name="species" value="Alien" /> Alien</label>
+    </div>
+  </div>
+  <div id="characters"></div>
+  <div id="pagination">
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+  <div id="modal">
+    <div id="modal-content"></div>
+  </div>
+
+  <script>
+    let apiUrl = 'https://rickandmortyapi.com/api/character';
+    let charactersData = [];
+    let debounceTimeout;
+
+    function fetchCharacters(url = apiUrl) {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          charactersData = data.results;
+          displayCharacters(charactersData);
+          document.getElementById('prev').disabled = !data.info.prev;
+          document.getElementById('next').disabled = !data.info.next;
+          document.getElementById('prev').onclick = () => fetchCharacters(data.info.prev);
+          document.getElementById('next').onclick = () => fetchCharacters(data.info.next);
+        });
+    }
+
+    function displayCharacters(characters) {
+      const container = document.getElementById('characters');
+      container.innerHTML = '';
+      const search = document.getElementById('search').value.toLowerCase();
+      const status = document.querySelector('input[name="status"]:checked').value;
+      const species = document.querySelector('input[name="species"]:checked').value;
+
+      characters
+        .filter(c => c.name.toLowerCase().includes(search))
+        .filter(c => !status || c.status.toLowerCase() === status)
+        .filter(c => !species || c.species === species)
+        .forEach(character => {
+          const card = document.createElement('div');
+          card.className = 'character-card';
+          card.innerHTML = `
+            <img src="${character.image}" alt="${character.name}" />
+            <h3>${character.name}</h3>
+            <p class="status ${character.status.toLowerCase()}">${character.status}</p>
+            <p>${character.species}</p>
+            ${character.episode.length > 30 ? '<div class="veteran-badge">Veteran</div>' : ''}
+          `;
+          card.onclick = () => showModal(character);
+          container.appendChild(card);
+        });
+    }
+
+    function showModal(character) {
+      const modal = document.getElementById('modal');
+      const content = document.getElementById('modal-content');
+      content.innerHTML = `
+        <h2>${character.name}</h2>
+        <img src="${character.image}" style="width:100%; border-radius:10px;" />
+        <p>Status: ${character.status}</p>
+        <p>Species: ${character.species}</p>
+        <p>Gender: ${character.gender}</p>
+        <p>Origin: ${character.origin.name}</p>
+        <p>Location: ${character.location.name}</p>
+        <p>Episode Count: ${character.episode.length}</p>
+        <button onclick="document.getElementById('modal').style.display='none'">Close</button>
+      `;
+      modal.style.display = 'flex';
+    }
+
+    document.getElementById('search').addEventListener('input', () => {
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(() => displayCharacters(charactersData), 300);
+    });
+
+    document.querySelectorAll('input[name="status"]').forEach(r => r.addEventListener('change', () => displayCharacters(charactersData)));
+    document.querySelectorAll('input[name="species"]').forEach(r => r.addEventListener('change', () => displayCharacters(charactersData)));
+
+    fetchCharacters();
+  </script>
+</body>
+</html>
