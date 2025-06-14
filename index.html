@@ -3,118 +3,431 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Library Management System</title>
+  <title>Digital Recipe Book</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 20px;
-      background-color: #f5f5f5;
+      font-family: sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      color: #000;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    header, footer {
+      background: #343a40;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    header button {
+      margin-top: 10px;
+      padding: 0.5rem 1rem;
+      background-color: #ffc107;
+      border: none;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
     }
     .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-radius: 8px;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    form, .controls, .pagination {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    form input, form select, form button,
-    .controls select, .pagination button {
-      padding: 8px;
+    input, textarea, button, select {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.6rem;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
+      font-size: 1rem;
     }
-    form button {
-      background-color: #4CAF50;
+    button {
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    img {
+      margin: 10px 0;
+      border-radius: 8px;
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+    }
+    .recipe-card {
+      background: #f1f1f1;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #f1f1f1;
+    }
+    .dark-mode .container {
+      background-color: #1e1e1e;
+    }
+    .dark-mode input,
+    .dark-mode textarea,
+    .dark-mode select {
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+      border: 1px solid #555;
+    }
+    .dark-mode .recipe-card {
+      background-color: #2a2a2a;
+      border-color: #555;
+    }
+    .dark-mode button {
+      background-color: #26a69a;
+    }
+    .dark-mode header, .dark-mode footer {
+      background-color: #1a1a1a;
+    }
+    .dark-mode header button {
+      background-color: #f8c10d;
+      color: black;
+    }
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #ff5757;
       color: white;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
     }
-    form button:hover {
-      background-color: #45a049;
+    button:hover {
+      background-color: #e13b3b;
     }
-    ul#bookListContainer {
-      list-style: none;
-      padding: 0;
-    }
-    ul#bookListContainer li {
-      background: #fafafa;
-      margin-bottom: 8px;
+    .review-section {
+      background: #fff8dc;
       padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      margin-top: 10px;
+      border-radius: 8px;
     }
-    .pagination button {
-      background-color: #eee;
-      border: none;
-      cursor: pointer;
+    .review-section select, .review-section input {
+      width: auto;
+      display: inline-block;
     }
-    .pagination button:hover {
-      background-color: #ddd;
+    .review-section p {
+      margin: 0.5rem 0;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Digital Recipe Book</h1>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  </header>
+
   <div class="container">
-    <h1>Library Management System</h1>
-
-    <!-- Add Book Form -->
-    <form id="addBookForm">
-      <input name="title" placeholder="Title" required>
-      <input name="author" placeholder="Author" required>
-      <input name="genre" placeholder="Genre">
-      <input type="number" name="publishedYear" placeholder="Year">
-      <label><input type="checkbox" name="available"> Available</label>
-      <button type="submit">Add Book</button>
-    </form>
-
-    <!-- Filtering and Sorting Controls -->
-    <div class="controls">
-      <select id="filterGenre">
-        <option value="">All Genres</option>
-        <option>Science Fiction</option>
-        <option>Fantasy</option>
-        <option>Non-Fiction</option>
-        <option>Romance</option>
-      </select>
-
-      <select id="filterAuthor">
-        <option value="">All Authors</option>
-        <option>J.K. Rowling</option>
-        <option>J.R.R. Tolkien</option>
-        <option>George R.R. Martin</option>
-        <option>Isaac Asimov</option>
-      </select>
-
-      <select id="sortField">
-        <option value="title">Sort by Title</option>
-        <option value="author">Sort by Author</option>
-        <option value="publishedYear">Sort by Year</option>
-      </select>
-    </div>
-
-    <!-- Book List -->
-    <ul id="bookListContainer"></ul>
-
-    <!-- Pagination Controls -->
-    <div class="pagination">
-      <button id="prevPage">Prev</button>
-      <button id="nextPage">Next</button>
-    </div>
+    <h2>Login / Register</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="registerUser()">Register</button>
+    <button onclick="loginUser()">Login</button>
   </div>
 
-  <!-- Load main.js as module -->
-  <script type="module" src="main.js"></script>
+  <div class="container" id="recipeForm" style="display:none">
+    <button onclick="logoutUser()">Logout</button>
+
+    <h2>Add Recipe</h2>
+    <input type="text" id="recipeName" placeholder="Recipe Name" />
+    <textarea id="ingredients" placeholder="Ingredients"></textarea>
+    <textarea id="instructions" placeholder="Instructions"></textarea>
+    <input type="number" id="cookingTime" placeholder="Cooking Time (in minutes)" />
+    <select id="category">
+      <option value="Appetizer">Appetizer</option>
+      <option value="Main Course">Main Course</option>
+      <option value="Dessert">Dessert</option>
+    </select>
+    <input type="file" id="photo" />
+    <button onclick="addRecipe()">Save Recipe</button>
+
+    <h2>Search Recipes by Ingredient</h2>
+    <input type="text" id="searchInput" placeholder="e.g. tomato" oninput="searchRecipes()" />
+
+    <h2>Your Saved Recipes</h2>
+    <div id="recipeList"></div>
+
+    <h2>Meal Plan</h2>
+    <textarea id="mealPlan" placeholder="Monday: Pasta\nTuesday: Salad..."></textarea>
+    <button onclick="saveMealPlan()">Save Meal Plan</button>
+
+    <h2>Cooking Timer</h2>
+    <input type="number" id="timerInput" placeholder="Time in seconds" />
+    <button onclick="startTimer()">Start Timer</button>
+    <button onclick="stopTimer()">Stop Timer</button>
+    <p id="timerDisplay"></p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Digital Recipe Book</p>
+  </footer>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut,
+  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    doc,
+    setDoc,
+    query,
+    where,
+    getDocs,
+    updateDoc,
+    arrayUnion
+  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyByFclT1nh2RCJRz2U0rshCTDg94yi32uM",
+    authDomain: "digital-recipe-app-b3c6a.firebaseapp.com",
+    projectId: "digital-recipe-app-b3c6a",
+    storageBucket: "digital-recipe-app-b3c6a.appspot.com",
+    messagingSenderId: "971530959645",
+    appId: "1:971530959645:web:d146e7e915d4b995d4bff4",
+    measurementId: "G-F7LJ2QWZJB",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth();
+  const db = getFirestore();
+  const storage = getStorage();
+
+  let timerInterval;
+
+  window.registerUser = function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => alert("✅ Registered successfully!"))
+      .catch((err) => alert("❌ " + err.message));
+  };
+
+  window.loginUser = function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => alert("✅ Login successful!"))
+      .catch((err) => alert("❌ " + err.message));
+  };
+
+  window.logoutUser = function () {
+    signOut(auth)
+      .then(() => {
+        alert("👋 Logged out successfully!");
+        location.reload();
+      })
+      .catch((error) => {
+        alert("❌ Error logging out: " + error.message);
+      });
+  };
+
+  window.toggleDarkMode = function () {
+    document.body.classList.toggle("dark-mode");
+    const cards = document.querySelectorAll(".recipe-card");
+    cards.forEach(card => {
+      card.classList.toggle("dark-card");
+    });
+  };
+
+  window.addRecipe = async function () {
+    const name = document.getElementById("recipeName").value;
+    const ingredients = document.getElementById("ingredients").value;
+    const instructions = document.getElementById("instructions").value;
+    const cookingTime = document.getElementById("cookingTime").value;
+    const category = document.getElementById("category").value;
+    const photo = document.getElementById("photo").files[0];
+
+    let imageURL = "";
+    if (photo) {
+      const storageRef = ref(storage, `images/${Date.now()}_${photo.name}`);
+      await uploadBytes(storageRef, photo);
+      imageURL = await getDownloadURL(storageRef);
+    }
+
+    await addDoc(collection(db, "recipes"), {
+      userId: auth.currentUser.uid,
+      name,
+      ingredients,
+      instructions,
+      cookingTime,
+      category,
+      imageURL,
+      timestamp: new Date(),
+      reviews: []
+    });
+
+    alert("✅ Recipe added!");
+    loadRecipes();
+  };
+
+  window.loadRecipes = async function () {
+    const recipeList = document.getElementById("recipeList");
+    recipeList.innerHTML = "<p>Loading recipes...</p>";
+
+    const q = query(collection(db, "recipes"), where("userId", "==", auth.currentUser.uid));
+    const snapshot = await getDocs(q);
+
+    recipeList.innerHTML = "";
+
+    if (snapshot.empty) {
+      recipeList.innerHTML = "<p>No recipes saved yet.</p>";
+      return;
+    }
+
+    snapshot.forEach((docRef) => {
+      const recipe = docRef.data();
+      const div = document.createElement("div");
+      div.classList.add("recipe-card");
+      div.innerHTML = `
+        <h3>${recipe.name}</h3>
+        <img src="${recipe.imageURL}" />
+        <p><strong>Category:</strong> ${recipe.category}</p>
+        <p><strong>Time:</strong> ${recipe.cookingTime} mins</p>
+        <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
+        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+        <div>
+          <label for="rating">⭐ Your Rating:</label>
+          <select class="rating">
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+          </select>
+          <input type="text" placeholder="Write a review" class="reviewText"/>
+          <button onclick="submitReview('${docRef.id}', this)">Submit Review</button>
+        </div>
+        <div class="reviews">
+          <h4>User Reviews:</h4>
+          ${(recipe.reviews || []).map(r => `<p>⭐${r.rating} - ${r.text}</p>`).join('') || '<p>No reviews yet.</p>'}
+        </div>
+      `;
+      recipeList.appendChild(div);
+    });
+  };
+
+  window.submitReview = async function (recipeId, btn) {
+    const card = btn.closest(".recipe-card");
+    const rating = card.querySelector(".rating").value;
+    const reviewText = card.querySelector(".reviewText").value;
+
+    const recipeRef = doc(db, "recipes", recipeId);
+    await updateDoc(recipeRef, {
+      reviews: arrayUnion({ rating, text: reviewText })
+    });
+
+    alert("✅ Review added!");
+    loadRecipes();
+  };
+
+  window.searchRecipes = async function () {
+    const searchInput = document.getElementById("searchInput").value.toLowerCase();
+    const recipeList = document.getElementById("recipeList");
+    recipeList.innerHTML = "<p>Searching...</p>";
+
+    const q = query(collection(db, "recipes"), where("userId", "==", auth.currentUser.uid));
+    const snapshot = await getDocs(q);
+
+    const matchingRecipes = [];
+
+    snapshot.forEach((doc) => {
+      const recipe = doc.data();
+      if (recipe.ingredients.toLowerCase().includes(searchInput)) {
+        matchingRecipes.push(recipe);
+      }
+    });
+
+    recipeList.innerHTML = "";
+
+    if (matchingRecipes.length === 0) {
+      recipeList.innerHTML = "<p style='color: red;'>❌ No matching recipes found.</p>";
+    } else {
+      matchingRecipes.forEach((recipe) => {
+        const div = document.createElement("div");
+        div.classList.add("recipe-card");
+        div.innerHTML = `
+          <h3>${recipe.name}</h3>
+          <img src="${recipe.imageURL}" />
+          <p><strong>Category:</strong> ${recipe.category}</p>
+          <p><strong>Time:</strong> ${recipe.cookingTime} mins</p>
+          <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
+          <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+        `;
+        recipeList.appendChild(div);
+      });
+    }
+  };
+
+  window.saveMealPlan = async function () {
+    const mealPlan = document.getElementById("mealPlan").value;
+    const userId = auth.currentUser.uid;
+    await setDoc(doc(db, "mealPlans", userId), { mealPlan });
+    alert("✅ Meal plan saved!");
+  };
+
+  window.startTimer = function () {
+    let time = parseInt(document.getElementById("timerInput").value);
+    const display = document.getElementById("timerDisplay");
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (time <= 0) {
+        clearInterval(timerInterval);
+        display.textContent = "⏰ Time's up!";
+      } else {
+        display.textContent = `${time} seconds left`;
+        time--;
+      }
+    }, 1000);
+  };
+
+  window.stopTimer = function () {
+    clearInterval(timerInterval);
+    document.getElementById("timerDisplay").textContent = "Timer stopped.";
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    const form = document.getElementById("recipeForm");
+    if (user) {
+      form.style.display = "block";
+      loadRecipes();
+    } else {
+      form.style.display = "none";
+    }
+  });
+</script>
 </body>
 </html>
